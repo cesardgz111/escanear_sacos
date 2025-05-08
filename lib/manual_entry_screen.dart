@@ -64,9 +64,7 @@ class _ManualEntryScreenState extends State<ManualEntryScreen> {
               child: ElevatedButton(
                 onPressed: (_selectedSize != null && _selectedCorn != null)
                     ? () {
-                        // Devuelve al HomeScreen el tamaño y tipo seleccionados
-                        Navigator.pop(context,
-                            {'size': _selectedSize!, 'corn': _selectedCorn!});
+                        Navigator.pop(context, true);
                       }
                     : null,
                 child: Text('Agregar'),

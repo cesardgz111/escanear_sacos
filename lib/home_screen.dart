@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'login_screen.dart';
 import 'add_sack_screen.dart';
-import 'remove_sack_screen.dart';
 import 'manual_entry_screen.dart';
 import 'redeem_prize_screen.dart';
 
@@ -18,7 +17,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
-  final List<String> _manualSacs = [];
+  int _sacCount = 0;
 
   List<Widget> get _sections => [
         _mainSection(),
@@ -39,19 +38,11 @@ class _HomeScreenState extends State<HomeScreen> {
             style: TextStyle(fontSize: 20),
           ),
           SizedBox(height: 20),
-          if (_manualSacs.isNotEmpty) ...[
-            Text(
-              'Sacos añadidos manualmente:',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 12),
-            for (var sac in _manualSacs)
-              ListTile(
-                leading: Icon(Icons.check_circle_outline),
-                title: Text(sac),
-              ),
-            SizedBox(height: 20),
-          ],
+          Text(
+            'Sacos registrados: $_sacCount',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
               Navigator.pushReplacement(
@@ -86,26 +77,13 @@ class _HomeScreenState extends State<HomeScreen> {
           SizedBox(height: 16),
           ElevatedButton(
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => RemoveSackScreen()),
-              );
-            },
-            child: Text('Eliminar saco'),
-            style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 50)),
-          ),
-          SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push<Map<String, String>>(
+              Navigator.push<bool>(
                 context,
                 MaterialPageRoute(builder: (_) => ManualEntryScreen()),
-              ).then((result) {
-                if (result != null) {
+              ).then((added) {
+                if (added == true) {
                   setState(() {
-                    _manualSacs.insert(
-                        0, '${result['size']} - ${result['corn']}');
+                    _sacCount++;
                   });
                 }
               });
@@ -120,7 +98,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _rewardsSection() {
-    final totalSacs = _manualSacs.length;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24.0),
       child: Column(
@@ -143,12 +120,18 @@ class _HomeScreenState extends State<HomeScreen> {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () {
-                Navigator.push(
+                Navigator.push<int>(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => RedeemPrizeScreen(totalSacs: totalSacs),
+                    builder: (_) => RedeemPrizeScreen(totalSacs: _sacCount),
                   ),
-                );
+                ).then((redeemed) {
+                  if (redeemed != null && redeemed > 0) {
+                    setState(() {
+                      _sacCount -= redeemed;
+                    });
+                  }
+                });
               },
               child: Text('Canjear premio'),
             ),
