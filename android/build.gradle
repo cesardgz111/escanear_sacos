@@ -1,0 +1,42 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.2.2' // o la versión que uses
+        classpath 'com.google.gms:google-services:4.3.15' // <-- Agrega esta línea
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+subprojects { subproject ->
+    // Para cada submódulo que use el plugin de librería Android...
+    subproject.plugins.withId('com.android.library') {
+        subproject.extensions.findByName('android')?.with {
+            // Si no tiene namespace definido, fuerzalo a tu paquete
+            if (!namespace || namespace.trim().isEmpty()) {
+                namespace = 'com.example.login_app'
+            }
+        }
+    }
+}
+
+rootProject.buildDir = "../build"
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+subprojects {
+    project.evaluationDependsOn(":app")
+}
+
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
+}
+
