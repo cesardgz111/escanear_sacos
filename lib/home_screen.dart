@@ -7,9 +7,9 @@ import 'manual_entry_screen.dart';
 import 'redeem_prize_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  final String? email;
+  final String userName;
 
-  const HomeScreen({Key? key, this.email}) : super(key: key);
+  const HomeScreen({Key? key, required this.userName}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -32,25 +32,25 @@ class _HomeScreenState extends State<HomeScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Image.asset('assets/logo-aspros.png', width: 200),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Text(
-            '¡Bienvenido, ${widget.email}!',
-            style: TextStyle(fontSize: 20),
+            '¡Bienvenido, ${widget.userName}!',
+            style: const TextStyle(fontSize: 20),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Text(
             'Sacos registrados: $_sacCount',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (_) => LoginScreen()),
+                MaterialPageRoute(builder: (_) => const LoginScreen()),
               );
             },
-            child: Text('Regresar al Login'),
+            child: const Text('Regresar al Login'),
           ),
         ],
       ),
@@ -70,16 +70,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 MaterialPageRoute(builder: (_) => AddSackScreen()),
               );
             },
-            child: Text('Añadir saco'),
+            child: const Text('Añadir saco'),
             style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 50)),
+                minimumSize: const Size(double.infinity, 50)),
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           ElevatedButton(
             onPressed: () {
               Navigator.push<bool>(
                 context,
-                MaterialPageRoute(builder: (_) => ManualEntryScreen()),
+                MaterialPageRoute(builder: (_) => const ManualEntryScreen()),
               ).then((added) {
                 if (added == true) {
                   setState(() {
@@ -88,9 +88,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 }
               });
             },
-            child: Text('Agregar manualmente'),
+            child: const Text('Agregar manualmente'),
             style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 50)),
+                minimumSize: const Size(double.infinity, 50)),
           ),
         ],
       ),
@@ -103,19 +103,19 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Premios disponibles:',
+          const Text('Premios disponibles:',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          SizedBox(height: 16),
-          Text('• 20 sacos registrados = 1 saco gratis'),
-          SizedBox(height: 8),
-          Text('• 50 sacos registrados = 3 sacos gratis'),
-          SizedBox(height: 8),
-          Text('• 100 sacos registrados = 8 sacos gratis'),
-          SizedBox(height: 8),
-          Text('• 200 sacos registrados = 20 sacos gratis'),
-          SizedBox(height: 8),
-          Text('• 500 sacos registrados = 60 sacos gratis'),
-          SizedBox(height: 24),
+          const SizedBox(height: 16),
+          const Text('• 20 sacos registrados = 1 saco gratis'),
+          const SizedBox(height: 8),
+          const Text('• 50 sacos registrados = 3 sacos gratis'),
+          const SizedBox(height: 8),
+          const Text('• 100 sacos registrados = 8 sacos gratis'),
+          const SizedBox(height: 8),
+          const Text('• 200 sacos registrados = 20 sacos gratis'),
+          const SizedBox(height: 8),
+          const Text('• 500 sacos registrados = 60 sacos gratis'),
+          const SizedBox(height: 24),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
@@ -123,17 +123,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 Navigator.push<int>(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => RedeemPrizeScreen(totalSacs: _sacCount),
-                  ),
+                      builder: (_) => RedeemPrizeScreen(totalSacs: _sacCount)),
                 ).then((redeemed) {
                   if (redeemed != null && redeemed > 0) {
-                    setState(() {
-                      _sacCount -= redeemed;
-                    });
+                    setState(() => _sacCount -= redeemed);
                   }
                 });
               },
-              child: Text('Canjear premio'),
+              child: const Text('Canjear premio'),
             ),
           ),
         ],
@@ -141,26 +138,22 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _onItemTapped(int index) {
-    setState(() => _selectedIndex = index);
-  }
+  void _onItemTapped(int index) => setState(() => _selectedIndex = index);
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Pantalla Principal')),
-      body: Center(child: _sections[_selectedIndex]),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.qr_code_scanner), label: 'Escanear'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.card_giftcard), label: 'Premios'),
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(title: const Text('Pantalla Principal')),
+        body: Center(child: _sections[_selectedIndex]),
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped,
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Inicio'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.qr_code_scanner), label: 'Escanear'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.card_giftcard), label: 'Premios'),
+          ],
+        ),
+      );
 }

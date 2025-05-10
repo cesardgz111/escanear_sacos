@@ -10,66 +10,64 @@ class ManualEntryScreen extends StatefulWidget {
 }
 
 class _ManualEntryScreenState extends State<ManualEntryScreen> {
-  final List<String> _sizes = ['Chico', 'Mediano', 'Grande'];
-  final List<String> _cornTypes = ['Komanche', 'Supremo', 'Normal'];
+  final _codeController = TextEditingController();
+  bool _isValid = false;
 
-  String? _selectedSize;
-  String? _selectedCorn;
+  void _onCodeChanged() {
+    final text = _codeController.text;
+    // Comprueba que sean exactamente 16 dígitos numéricos
+    final isDigits = RegExp(r'^\d{16}$').hasMatch(text);
+    setState(() {
+      _isValid = isDigits;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _codeController.addListener(_onCodeChanged);
+  }
+
+  @override
+  void dispose() {
+    _codeController
+      ..removeListener(_onCodeChanged)
+      ..dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Agregar Manualmente')),
+      appBar: AppBar(title: const Text('Agregar Manualmente')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Seleccione tamaño:', style: TextStyle(fontSize: 16)),
-            SizedBox(height: 8),
-            DropdownButtonFormField<String>(
-              value: _selectedSize,
-              items: _sizes
-                  .map((size) =>
-                      DropdownMenuItem(value: size, child: Text(size)))
-                  .toList(),
-              onChanged: (value) => setState(() => _selectedSize = value),
+            TextField(
+              controller: _codeController,
               decoration: InputDecoration(
+                labelText: 'Código de barras:',
+                hintText: 'Ingresa 16 dígitos',
                 border: OutlineInputBorder(),
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 12, vertical: 4),
               ),
-              hint: Text('Elige un tamaño'),
+              keyboardType: TextInputType.number,
+              maxLength: 16,
             ),
-            SizedBox(height: 24),
-            Text('Seleccione tipo de maíz:', style: TextStyle(fontSize: 16)),
-            SizedBox(height: 8),
-            DropdownButtonFormField<String>(
-              value: _selectedCorn,
-              items: _cornTypes
-                  .map((type) =>
-                      DropdownMenuItem(value: type, child: Text(type)))
-                  .toList(),
-              onChanged: (value) => setState(() => _selectedCorn = value),
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-              ),
-              hint: Text('Elige tipo de maíz'),
-            ),
-            Spacer(),
+            const Spacer(),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: (_selectedSize != null && _selectedCorn != null)
+                onPressed: _isValid
                     ? () {
+                        // Devuelve true al HomeScreen para incrementar el contador
                         Navigator.pop(context, true);
                       }
                     : null,
-                child: Text('Agregar'),
+                child: const Text('Agregar'),
                 style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 14)),
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                ),
               ),
             ),
           ],
