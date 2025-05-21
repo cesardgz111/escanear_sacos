@@ -1,5 +1,3 @@
-// lib/home_screen.dart
-
 import 'package:flutter/material.dart';
 import 'login_screen.dart';
 import 'add_sack_screen.dart';
@@ -8,8 +6,10 @@ import 'redeem_prize_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final String userName;
+  final String userNumber;
 
-  const HomeScreen({Key? key, required this.userName}) : super(key: key);
+  const HomeScreen({Key? key, required this.userName, required this.userNumber})
+      : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -65,10 +65,16 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           ElevatedButton(
             onPressed: () {
-              Navigator.push(
+              Navigator.push<bool>(
                 context,
-                MaterialPageRoute(builder: (_) => AddSackScreen()),
-              );
+                MaterialPageRoute(
+                  builder: (_) => AddSackScreen(userNumber: widget.userNumber),
+                ),
+              ).then((added) {
+                if (added == true) {
+                  setState(() => _sacCount++);
+                }
+              });
             },
             child: const Text('Añadir saco'),
             style: ElevatedButton.styleFrom(
@@ -79,7 +85,10 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () {
               Navigator.push<bool>(
                 context,
-                MaterialPageRoute(builder: (_) => const ManualEntryScreen()),
+                MaterialPageRoute(
+                  builder: (_) =>
+                      ManualEntryScreen(userNumber: widget.userNumber),
+                ),
               ).then((added) {
                 if (added == true) {
                   setState(() {

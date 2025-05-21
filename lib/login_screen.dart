@@ -1,5 +1,3 @@
-// lib/login_screen.dart
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'register_screen.dart';
@@ -38,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (_) => HomeScreen(userName: name),
+            builder: (_) => HomeScreen(userName: name, userNumber: number),
           ),
         );
       } else {
